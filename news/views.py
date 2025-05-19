@@ -1,11 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User, Group
-from django.http import HttpResponse, JsonResponse
-from django.contrib import messages
-from django.core import exceptions
+from django.http import HttpResponse
 from django.db.models import Q
 from pathlib import Path
 
@@ -203,7 +198,7 @@ def NoticiaExcluir(request, pk):
 
 
 def Procurar(request):
-    q = request.GET.get('q') if request.GET.get('q') != None else ''
+    q = request.GET.get('q') if request.GET.get('q') is not None else ''
     número_de_notícia = 0
     noticias = Noticia.objects.all().order_by('-updated').filter(
         Q(título__icontains=q) &

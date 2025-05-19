@@ -18,19 +18,23 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 
-from django.urls import path, include
+from django.urls import path
 
 from news.views import (
     NoticiaPublicar, 
     NoticiaEditar, 
     NoticiaExcluir, 
     NoticiaPage, 
-    Procurar
+    Procurar,
+    
     )
 
 from users.views import (
     UserProfile,
-    EditarUserProfile
+    EditarUserProfile,
+    BloquearPerfil,
+    ApagarComentariosUserProfile,
+    ExcluirComentario
     )
 
 from base.views import (
@@ -75,6 +79,14 @@ urlpatterns = [
     path('u/', RedirectToHome),
     path('u/<str:pk>', UserProfile, name='user'),
     path('u/editar/<str:pk>', EditarUserProfile, name='editar_user'),
+
+
+
+    path('u/excluir/<str:pk>', ExcluirComentario, name='excluir-comentario'),
+
+    path('u/apagar_comentarios/<str:pk>', ApagarComentariosUserProfile, name='apagar-comentarios'),
+
+    path('u/bloquear/<str:pk>', BloquearPerfil, name='bloquear-user'),
 
 ]
 

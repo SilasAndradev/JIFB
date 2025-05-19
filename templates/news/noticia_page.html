@@ -14,7 +14,7 @@
   <div class="comentarios-lista card">
     <div class="title">Comentários ({{ comentarios|length }})</div>
 
-      {% if request.user.is_authenticated %}
+      {% if request.user.is_authenticated and perfil.pode_comentar %}
         <div class="text-box">
           <form method="POST" id="form-comentario" action="">
             {% csrf_token %}

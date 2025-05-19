@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 
 from pathlib import Path
 
 from .forms import EditarUserProfileForm
 from base.models import Perfil
-
+from news.views import ComentarioNaNoticia
 
 # Create your views here.
 
@@ -45,7 +46,7 @@ def EditarUserProfile(request, pk):
         
         if profile_form.is_valid():
             perfil.bio = profile_form.cleaned_data['bio']
-            if profile_form.cleaned_data['foto_de_perfil'] !=  None:
+            if profile_form.cleaned_data['foto_de_perfil'] is not None:
                 perfil.foto_de_perfil = profile_form.cleaned_data['foto_de_perfil']
             
             perfil.save()
@@ -58,3 +59,35 @@ def EditarUserProfile(request, pk):
         "minha_foto_de_perfil":minha_foto_de_perfil.foto_de_perfil,
     }
     return render(request, "users/editar_profile.html", context)
+
+@login_required(login_url='/login')
+def BloquearPerfil(request, pk):
+    if request.user.is_staff:
+        perfil = Perfil.objects.get(id=pk)
+        perfil.pode_comentar = False
+        perfil.save()
+        return HttpResponse("<h1>Operação concluída com sucesso</h1>")
+    else:
+        return redirect('home')
+
+
+@login_required(login_url='/login')
+def ApagarComentariosUserProfile(request, pk):
+    if request.user.is_staff:
+        perfil = Perfil.objects.get(id=pk)
+        perfil.pode_comentar = False
+        comentarios = list(ComentarioNaNoticia.objects.filter(autor=perfil))
+        for comentario in comentarios:
+            comentario.delete()
+        return HttpResponse("<h1>Operação concluída com sucesso</h1>")
+    else:
+        return redirect('home')
+    
+@login_required(login_url='/login')
+def ExcluirComentario(request, pk):
+    if request.user.is_staff:
+        comentario = ComentarioNaNoticia.objects.get(id=pk)
+        comentario.delete()
+        return HttpResponse("<h1>Operação concluída com sucesso</h1>")
+    else:
+        return redirect('home')
