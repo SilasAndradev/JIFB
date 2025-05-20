@@ -76,6 +76,7 @@ def ApagarComentariosUserProfile(request, pk):
     if request.user.is_staff:
         perfil = Perfil.objects.get(id=pk)
         perfil.pode_comentar = False
+        perfil.save()
         comentarios = list(ComentarioNaNoticia.objects.filter(autor=perfil))
         for comentario in comentarios:
             comentario.delete()
