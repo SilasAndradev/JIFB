@@ -1,7 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from markdown.extensions.extra import ExtraExtension
-from markdown.extensions import Extension
 from django.http import HttpResponse
 from django.utils import timezone
 from django.conf import settings
