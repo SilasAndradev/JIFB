@@ -8,8 +8,18 @@ from pathlib import Path
 import markdown
 import os
 
-from .forms import NoticiaForm, ArquivosForm, ArquivoFormSet, ComentarioForm, RespostaForm
-from .models import Noticia, ArquivoNaNoticia, ComentarioNaNoticia
+from .forms import (
+    NoticiaForm, 
+    ArquivosForm, 
+    ArquivoFormSet, 
+    ComentarioForm, 
+    RespostaForm
+    )
+from .models import (
+    Noticia, 
+    ArquivoNaNoticia, 
+    ComentarioNaNoticia
+    )
 from base.models import Perfil
 
 
