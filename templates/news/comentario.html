@@ -1,8 +1,6 @@
 {% load static %}
 
 <!-- Certifique-se de que isso está no seu base.html -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
 <div class="comment-item mb-4">
   <div class="user d-flex align-items-center gap-2">
@@ -21,9 +19,18 @@
         <i class="fas fa-ellipsis-vertical"></i>
       </button>
       <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="{% url 'apagar-comentarios' comentario.autor.id %}"><i class="fas fa-pen me-2"></i>Apagar tudo</a></li>
-        <li><a class="dropdown-item text-danger" href="{% url 'bloquear-user' comentario.autor.id %}"><i class="fas fa-trash me-2"></i>Bloquear</a></li>
-        <li><a class="dropdown-item text-danger" href="{% url 'excluir-comentario' comentario.id %}"><i class="fas fa-trash me-2"></i>Excluir</a></li>
+        <li><a class="dropdown-item" href="{% url 'apagar-comentarios' comentario.autor.id %}"><i
+              class="fas fa-pen me-2"></i>Apagar tudo</a></li>
+        {% if comentario.autor.pode_comentar %}
+        <li><a class="dropdown-item text-danger" href="{% url 'bloquear-user' comentario.autor.id %}"><i
+              class="fas fa-trash me-2"></i>Bloquear</a></li>
+
+        {% else %}
+        <li><a class="dropdown-item text-danger" href="{% url 'bloquear-user' comentario.autor.id %}"><i
+              class="fas fa-trash me-2"></i>Desbloquear</a></li>
+        {% endif %}
+        <li><a class="dropdown-item text-danger" href="{% url 'excluir-comentario' comentario.id %}"><i
+              class="fas fa-trash me-2"></i>Excluir</a></li>
       </ul>
     </div>
     {% endif %}
@@ -40,12 +47,12 @@
 
   <div id="reply-{{ comentario.id }}" class="reply-form mt-3 ps-5" style="display:none;">
     {% if request.user.is_authenticated and perfil.pode_comentar %}
-      <form method="POST" action="">
-        {% csrf_token %}
-        {{ resposta_form.as_p }}
-        <input type="hidden" name="pai" value="{{ comentario.id }}">
-        <button type="submit" class="btn btn-success">Enviar</button>
-      </form>
+    <form method="POST" action="">
+      {% csrf_token %}
+      {{ resposta_form.as_p }}
+      <input type="hidden" name="pai" value="{{ comentario.id }}">
+      <button type="submit" class="btn btn-success">Enviar</button>
+    </form>
     {% endif %}
 
     <!-- respostas recuadas -->

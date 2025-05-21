@@ -33,7 +33,7 @@ def UserProfile(request, pk):
 def EditarUserProfile(request, pk):
     usuario = User.objects.get(username=pk)
 
-    if request.user.username != pk:
+    if request.user.username != pk and not request.user.is_staff:
         return redirect('user', pk)
 
     perfil = Perfil.objects.get(user=usuario)
@@ -41,12 +41,12 @@ def EditarUserProfile(request, pk):
     minha_foto_de_perfil = Perfil.objects.get(user=request.user)
 
     if request.method == 'POST':
-        Path(perfil.foto_de_perfil.path).unlink(missing_ok=True)
         profile_form = EditarUserProfileForm(request.POST, request.FILES)
         
         if profile_form.is_valid():
             perfil.bio = profile_form.cleaned_data['bio']
-            if profile_form.cleaned_data['foto_de_perfil'] is not None:
+            if profile_form.cleaned_data['foto_de_perfil']:
+                Path(perfil.foto_de_perfil.path).unlink(missing_ok=True)
                 perfil.foto_de_perfil = profile_form.cleaned_data['foto_de_perfil']
             
             perfil.save()
@@ -64,8 +64,12 @@ def EditarUserProfile(request, pk):
 def BloquearPerfil(request, pk):
     if request.user.is_staff:
         perfil = Perfil.objects.get(id=pk)
-        perfil.pode_comentar = False
-        perfil.save()
+        if perfil.pode_comentar:
+            perfil.pode_comentar = False
+            perfil.save()
+        else:
+            perfil.pode_comentar = True
+            perfil.save()
         return HttpResponse("<h1>Operação concluída com sucesso</h1>")
     else:
         return redirect('home')

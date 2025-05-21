@@ -7,8 +7,8 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from pathlib import Path
 
-from .models import Perfil
 from news.models import Noticia
+from .models import Perfil
 
 def QuemSomosPage(request):
     return render(request, 'base/quemsomos.html', {'minha_foto_de_perfil':Perfil.objects.get(user=request.user).foto_de_perfil if request.user.is_authenticated else None})
@@ -81,7 +81,7 @@ def LogoutUser(request):
 
 def HomePage(request):
 
-    noticias = Noticia.objects.all().order_by('-updated')
+    noticias = Noticia.objects.all().order_by('-updated')[:10]  
     if request.user.is_authenticated:
         perfil = Perfil.objects.filter(user=request.user)
         context = {

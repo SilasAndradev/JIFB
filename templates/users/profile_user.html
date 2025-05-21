@@ -16,10 +16,10 @@
       <div class="profile-username">@{{ usuario.username }}</div>
       <p class="profile-bio">{{ perfil.bio|linebreaks }}</p>
 
-      {% if request.user == usuario %}
-        <div class="edit-btn">
-          <a href="{% url 'editar_user' usuario.username %}" class="btn btn-success btn-rounded shadow">Editar Perfil</a>
-        </div>
+      {% if request.user.username == usuario.username or request.user.is_staff %}
+      <div class="edit-btn">
+        <a href="{% url 'editar_user' usuario.username %}" class="btn btn-success btn-rounded shadow">Editar Perfil</a>
+      </div>
       {% endif %}
     </div>
   </div>

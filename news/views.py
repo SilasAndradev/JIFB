@@ -1,13 +1,19 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from markdown.extensions.extra import ExtraExtension
+from markdown.extensions import Extension
 from django.http import HttpResponse
+from django.utils import timezone
+from django.conf import settings
 from django.db.models import Q
 from pathlib import Path
+import markdown
+import os
 
 from .forms import NoticiaForm, ArquivosForm, ArquivoFormSet, ComentarioForm, RespostaForm
+from .models import Noticia, ArquivoNaNoticia, ComentarioNaNoticia
 from base.models import Perfil
 
-from .models import Noticia, ArquivoNaNoticia, ComentarioNaNoticia
 
 
 
@@ -20,12 +26,47 @@ def NoticiaPublicar(request):
         if noticia_form.is_valid() and arquivo_form.is_valid():
             noticia = noticia_form.save(commit=False)
             noticia.autor = request.user
+
+             # Lê o conteúdo Markdown do arquivo enviado
+            # Primeiro, salve a notícia com o arquivo markdown
             noticia.save()
-            
+
+            # Agora leia o conteúdo do arquivo markdown enviado
+            if noticia.corpo:
+                markdown_file = noticia.corpo
+
+                # Abrir o arquivo salvo no servidor
+                with markdown_file.open(mode='rb') as f:
+                    markdown_content = f.read().decode('utf-8')
+
+                # Converte para HTML
+                html_content = markdown.markdown(markdown_content)
+
+                # Gera caminho do arquivo HTML com base na data/hora
+                now = timezone.now()
+                file_name = now.strftime("%Y-%m-%d_%H-%M-%S") + ".html"
+                html_path = os.path.join("uploads", "noticias", "html", now.strftime("%Y/%m/%d/"))
+                full_path = os.path.join(settings.MEDIA_ROOT, html_path)
+                os.makedirs(full_path, exist_ok=True)
+
+                full_file_path = os.path.join(full_path, file_name)
+                relative_file_path = os.path.join(html_path, file_name)
+
+                # Salva o conteúdo HTML em um novo arquivo
+                with open(full_file_path, "w", encoding="utf-8") as html_file:
+                    html_file.write(html_content)
+
+                # Atualiza o campo corpo com o caminho do HTML gerado
+                noticia.corpo.name = relative_file_path
+                noticia.save()
+
+            # Salva arquivos adicionais, se existirem
             for arquivo in request.FILES.getlist('arquivos'):
-                ArquivoNaNoticia.objects.create(noticia=noticia, arquivos=arquivo)
-            
+                if arquivo:
+                    ArquivoNaNoticia.objects.create(noticia=noticia, arquivos=arquivo)
+
             return redirect('feed')
+            
     else:
         noticia_form = NoticiaForm()
         arquivo_form = ArquivosForm()
@@ -68,7 +109,7 @@ def NoticiaPage(request, pk):
                     return redirect('noticia', pk=pk)
 
             context = {
-                'conteudo_html': conteudo_html,
+                'conteudo_html':conteudo_html,
                 'noticia': noticia,
                 'arquivos': arquivos,
                 'comentarios': comentarios,
@@ -119,6 +160,34 @@ def NoticiaEditar(request, pk):
             arquivos = arquivos_formset.save(commit=False)
             noticia_form.save()
             
+            if noticia.corpo:
+                markdown_file = noticia.corpo
+
+                # Abrir o arquivo salvo no servidor
+                with markdown_file.open(mode='rb') as f:
+                    markdown_content = f.read().decode('utf-8')
+
+                # Converte para HTML
+                html_content = markdown.markdown(markdown_content)
+
+                # Gera caminho do arquivo HTML com base na data/hora
+                now = timezone.now()
+                file_name = now.strftime("%Y-%m-%d_%H-%M-%S") + ".html"
+                html_path = os.path.join("uploads", "noticias", "html", now.strftime("%Y/%m/%d/"))
+                full_path = os.path.join(settings.MEDIA_ROOT, html_path)
+                os.makedirs(full_path, exist_ok=True)
+
+                full_file_path = os.path.join(full_path, file_name)
+                relative_file_path = os.path.join(html_path, file_name)
+
+                # Salva o conteúdo HTML em um novo arquivo
+                with open(full_file_path, "w", encoding="utf-8") as html_file:
+                    html_file.write(html_content)
+
+                # Atualiza o campo corpo com o caminho do HTML gerado
+                noticia.corpo.name = relative_file_path
+                noticia.save()
+
             # Esse loop vai salvar os arquivos editados
             for arquivo in arquivos:
                 arquivo.noticia = noticia

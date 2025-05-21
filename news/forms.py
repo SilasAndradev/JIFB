@@ -1,7 +1,7 @@
-from django.forms import ModelForm
 from .models import Noticia, ArquivoNaNoticia, ComentarioNaNoticia
-from django import forms
 from django.forms import modelformset_factory
+from django.forms import ModelForm
+from django import forms
 
 class MultipleFileInput(forms.ClearableFileInput):
     allow_multiple_selected = True

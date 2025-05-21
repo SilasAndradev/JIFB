@@ -1,6 +1,6 @@
-from django.db import models
 from django.contrib.auth.models import User
 from base.models import Perfil
+from django.db import models
 
 # Create your models here.
 
@@ -8,7 +8,7 @@ class Noticia(models.Model):
     autor = models.ForeignKey(User, on_delete=models.CASCADE)
     título = models.CharField(max_length=500)
     
-    corpo = models.FileField(upload_to="uploads/noticias/noticias/%Y/%m/%d/")
+    corpo = models.FileField(upload_to="uploads/noticias/noticias/%Y/%m/%d")
     capa_noticia = models.ImageField(upload_to="uploads/noticias/CAPAS/%Y/%m/%d")
 
     visivel = models.BooleanField(default=True)
