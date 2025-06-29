@@ -4,19 +4,120 @@
 {% block title %}Publicar notícias{% endblock %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="{% static 'CSS/news/style.css' %}">
+    <link rel="stylesheet" href="{% static 'CSS/news/style.css' %}">
 {% endblock %}
     
 {% block content %}
-  <div class="container mt-4">
-    <form action="" method="POST" enctype="multipart/form-data">
-      {% csrf_token %}
+    <div class="container mt-4">
+        <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
 
-        {{noticia_form.as_p}}
-        {{arquivo_form.as_p}}
+            <div class="mb-3">
+                
+                <label for="{{ noticia_form.título.id_for_label }}" class="form-label">Título:</label>
+                {{ noticia_form.título }} 
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ noticia_form.tags.id_for_label }}" class="form-label">Tags (separadas por vírgula):</label>
+                {{ noticia_form.tags }}
+            </div>
+
+            <div class="mb-3">
+               
+                <label for="{{ noticia_form.capa_noticia.id_for_label }}" class="form-label">Imagem da Capa:</label>
+                {{ noticia_form.capa_noticia }}
+            </div>
+
+            <div class="mb-3">
+
+                <label for="id_corpo" class="form-label">Conteúdo do Artigo:</label>
+                {{ noticia_form.corpo }} 
+            </div>
+            
+           
+            {# <div class="mb-3"> #}
+            {#     <label for="{{ arquivo_form.arquivos.id_for_label }}" class="form-label">Arquivos Adicionais:</label> #}
+            {#     {{ arquivo_form.arquivos }} #}
+            {# </div> #}
+            {# Ou para um formset: #}
+            {# {{ arquivos_formset.management_form }} #}
+            {# {% for form in arquivos_formset %} #}
+            {#     {{ form.as_p }} #}
+            {# {% endfor %} #}
+            
+            <input type="submit" value="Enviar" class="btn btn-success">
+        </form>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.tiny.cloud/1/wpcpuog85xxy8xjnv0kvo6qhkobmap9tndqouk5hhs2luppk/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: '#id_corpo', 
+        plugins: 'advlist autolink lists link image charmap print preview anchor code media table paste wordcount fullscreen', // Adicionei 'media', 'table', 'paste', 'wordcount', 'fullscreen' para mais funcionalidades
+        toolbar_mode: 'floating',
+        toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignalignright alignjustify | bullist numlist outdent indent | removeformat | image media | code | table | fullscreen',
         
+        // --- Configuração de Upload de Imagens para o TinyMCE ---
+        image_title: true, 
+        automatic_uploads: true, 
+        file_picker_types: 'image', 
+       
+        images_upload_url: '{% url "upload_tinymce_image" %}', 
+        
+      
+        images_upload_handler: function (blobInfo, success, failure) {
+            var xhr, formData;
+            xhr = new XMLHttpRequest();
+            xhr.withCredentials = false; 
 
-      <input type="submit" value="Enviar" class="btn btn-success">
-    </form>
-  </div>
+           
+            xhr.open('POST', '{% url "upload_tinymce_image" %}'); 
+
+            xhr.onload = function() {
+                var json;
+
+             
+                if (xhr.status === 403) {
+                    failure('HTTP Error: ' + xhr.statusText + ' - Verifique o token CSRF ou as permissões.');
+                    return;
+                }
+
+                if (xhr.status < 200 || xhr.status >= 300) {
+                    failure('HTTP Error: ' + xhr.statusText);
+                    return;
+                }
+
+               
+                try {
+                    json = JSON.parse(xhr.responseText);
+                } catch (e) {
+                    failure('Invalid JSON: ' + xhr.responseText);
+                    return;
+                }
+
+               
+                if (!json || typeof json.location != 'string') {
+                    failure('Invalid JSON: ' + xhr.responseText);
+                    return;
+                }
+
+                
+                success(json.location);
+            };
+
+            var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            xhr.setRequestHeader('X-CSRFToken', csrftoken);
+
+           
+            formData = new FormData();
+            formData.append('file', blobInfo.blob(), blobInfo.filename());
+
+            xhr.send(formData); 
+        },
+     
+    });
+</script>
 {% endblock %}

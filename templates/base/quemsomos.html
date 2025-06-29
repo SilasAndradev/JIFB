@@ -4,7 +4,7 @@
 {% block title %}Quem Somos | JIFB{% endblock %}
 
 {% block extra_css %}
-<!-- Adicione isso no <head> do seu HTML -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <link rel="stylesheet" href="{% static 'CSS/base/quem-somos.css' %}">
 {% endblock %}
 
@@ -82,31 +82,52 @@
   <hr class="linha-dev">
   <section class="dev-section">
     <h2>Equipe de Desenvolvimento</h2>
-    <!-- Card Back end -->
-    <div class="card back">
-      <img src="{% static 'img/JIFB_direitora.jpg' %}" alt="Silas" class="dev-img">
+        
+     <div class="card back">
       <div class="card-content">
-        <h3>Back-end</h3>
-        <p><strong>Silas de Almeida Andrade</strong></p>
-        <div class="icons">
-          <a href="https://github.com/SilasAndradev"><i class="fab fa-github"></i></a>
-          <a href="https://www.linkedin.com/in/silasandradev/"><i class="fab fa-linkedin"></i></a>
-          <a href="https://www.instagram.com/silas3_/"><i class="fab fa-instagram"></i></a>
-        </div>
+        <p class="texto-right">Responsável pelo UI/UX designer do site Jornal-News. Estudante do curso técnico de Informática integrado ao ensino médio. </p>
+        <p class="nome">Arthur Eugênio. 2024</p>
       </div>
+      <img src="{% static 'img/perfil-arthur.jpg'%}" style="border: #000 2px solid; width: 100px; height: 100px; background-color: #000; border-radius: 50%; margin: 1.5rem;">
     </div>
 
-    <!-- Card Front end -->
     <div class="card front">
-      <img src="{% static 'img/JIFB_direitora.jpg' %}" alt="Guilherme" class="dev-img">
       <div class="card-content">
-        <h3>Front-end</h3>
-        <p><strong>Guilherme Henrique Santana da Silva</strong></p>
+        <p class="sobre">Responsável pelo front-end do site Jornal-News. Estudante do curso técnico de Informática integrado ao ensino médio.</p>
+        <p class="nome-left">Guilherme Henrique. 2024</p>
         <div class="icons">
-          <a href="https://github.com/Ghs-d"><i class="fab fa-github"></i></a>
-          <a href="https://www.linkedin.com/in/guilherme-henrique-629862355/"><i class="fab fa-linkedin"></i></a>
-          <a href="https://www.instagram.com/guii.henrique/"><i class="fab fa-instagram"></i></a>
+          <a href="https://www.instagram.com/guii.henrique/" target="_blank"><i class="fab fa-instagram"></i></a>
+          <a href="https://github.com/Ghs-d" target="_blank"><i class="fab fa-github"></i></a>
+          <a href="https://www.linkedin.com/in/guilherme-henrique-629862355/" target="_blank"><i class="fab fa-linkedin"></i></a>
         </div>
       </div>
+      <img src="{% static 'img/perfil-gui-dev.png'%}" style="border: #000 2px solid; width: 100px; height: 100px; background-color: #000; border-radius: 50%; margin: 1.5rem;">
+    </div>
+
+     <div class="card back">
+      <div class="card-content">
+        <p class="texto-right">Responsável pelo Back-end do site Jornal-News. Estudante do curso técnico de Informática integrado ao ensino médio.</p>
+        <p class="nome">Silas Andrade. 2024</p>
+        <div class="icons">
+          <a href="https://www.instagram.com/silas3_/" target="_blank"><i class="fab fa-instagram" ></i></a>
+          <a href="https://github.com/SilasAndradev/" target="_blank"><i class="fab fa-github"></i></a>
+          <a href="https://www.linkedin.com/in/silasandradev/" target="_blank"><i class="fab fa-linkedin"></i></a>
+        </div>
+      </div>
+      <img src="{% static 'img/perfil-silas.jpg'%}" style=" border: #000 2px solid; width: 100px; height: 100px; background-color: #000; border-radius: 50%; margin: 1.5rem;">
+    </div>
+
+    <div class="card front">
+      <div class="card-content">
+        <p class="sobre">Responsável pelo back-end do site Jornal-News. Estudante do curso técnico de Informática integrado ao ensino médio.</p>
+        <p class="nome-left">Lucas da Hora. 2024</p>
+        <div class="icons">
+          <a href="https://www.instagram.com/eoh_vieira/" target="_blank"><i class="fab fa-instagram"></i></a>
+          <a href="https://github.com/lucasmystOS" target="_blank"><i class="fab fa-github"></i></a>
+        </div>
+      </div>
+      <img src="{% static 'img/perfil-lucas-dev.png'%}" style="border: #000 2px solid; width: 100px; height: 100px; background-color: #000; border-radius: 50%; margin: 1.5rem;">
+    </div>
+
   </section>
   {% endblock %}
