@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 
 from news.models import Noticia
 from .models import Perfil
+from users.forms import CustomUserCreationForm
 
 def QuemSomosPage(request):
     return render(request, 'base/quemsomos.html', {'minha_foto_de_perfil':Perfil.objects.get(user=request.user).foto_de_perfil if request.user.is_authenticated else None})
@@ -32,15 +33,13 @@ def LoginPage(request):
         try:
             user = User.objects.get(username=username)
         except Exception:
-            messages.error(request, 'Usuário não existe!')
+            messages.error(request, 'Nome de usuário OU senha estão erradas!')
 
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
             return redirect('home')
-        else:
-            messages.error(request, 'Nome de usuário OU senha estão erradas!')
 
     context = {
 
@@ -49,12 +48,12 @@ def LoginPage(request):
 
 
 def RegisterUser(request):
-    form = UserCreationForm()
+    form = CustomUserCreationForm()
 
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         
-        if form.is_valid:
+        if form.is_valid():
             user = form.save(commit=False)
             user.username = user.username.lower()
             user.save()
@@ -81,12 +80,19 @@ def HomePage(request):
 
     noticias = Noticia.objects.all().order_by('-updated')[:10]  
     if request.user.is_authenticated:
-        perfil = Perfil.objects.filter(user=request.user)
+        try:
+            perfil = Perfil.objects.get(user=request.user)
+            foto = perfil.foto_de_perfil
+        except Perfil.DoesNotExist:
+            perfil = None
+            foto = None
+
         context = {
-        'noticias':noticias,
-        'perfil':perfil,
-        'minha_foto_de_perfil':Perfil.objects.get(user=request.user).foto_de_perfil
-    }
+            'noticias': noticias,
+            'perfil': perfil,
+            'minha_foto_de_perfil': foto
+        }
+
     else:
         context = {
             'noticias':noticias,

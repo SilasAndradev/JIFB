@@ -13,12 +13,13 @@
       <span class="fw-bold">@{{ comentario.autor.user.username }}</span>
       <p class="text-muted small mb-0">{{ comentario.created|date:"d M Y - H:i" }}</p>
     </div>
-    {% if request.user.is_staff %}
+    {% if request.user.is_staff or request.user == comentario.autor.user %}
     <div class="ms-auto dropdown">
       <button class="btn btn-link text-dark p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="fas fa-ellipsis-vertical"></i>
       </button>
       <ul class="dropdown-menu">
+        {% if request.user.is_staff %}
         <li><a class="dropdown-item" href="{% url 'apagar-comentarios' comentario.autor.id %}"><i
               class="fas fa-pen me-2"></i>Apagar tudo</a></li>
         {% if comentario.autor.pode_comentar %}
@@ -29,6 +30,8 @@
         <li><a class="dropdown-item text-danger" href="{% url 'bloquear-user' comentario.autor.id %}"><i
               class="fas fa-trash me-2"></i>Desbloquear</a></li>
         {% endif %}
+        {% endif %}
+
         <li><a class="dropdown-item text-danger" href="{% url 'excluir-comentario' comentario.id %}"><i
               class="fas fa-trash me-2"></i>Excluir</a></li>
       </ul>
@@ -40,6 +43,7 @@
     {{ comentario.comentario }}
   </div>
 
+  {% if comentario.pai == None %}
   <!-- botão para mostrar formulário de resposta -->
   <button class="btn btn-sm btn-outline-primary mt-2" onclick="toggleReply('{{ comentario.id }}')">
     Responder ({{ comentario.respostas.count }})
@@ -53,6 +57,7 @@
       <input type="hidden" name="pai" value="{{ comentario.id }}">
       <button type="submit" class="btn btn-success">Enviar</button>
     </form>
+    {% endif %}
     {% endif %}
 
     <!-- respostas recuadas -->

@@ -60,3 +60,20 @@ a:hover {
   text-align: center;
   margin-top: 1rem;
 }
+
+.messages {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.messages li {
+  background-color: #f3f0fb;
+  border-left: 4px solid #745DAB;
+  color: #333;
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.7rem;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(116, 93, 171, 0.1);
+  font-weight: 500;
+}

@@ -90,9 +90,11 @@ def ApagarComentariosUserProfile(request, pk):
     
 @login_required(login_url='/login')
 def ExcluirComentario(request, pk):
-    if request.user.is_staff:
-        comentario = ComentarioNaNoticia.objects.get(id=pk)
+    comentario = ComentarioNaNoticia.objects.get(id=pk)
+    perfil_autor = comentario.autor
+    user = perfil_autor.user
+    if request.user.is_staff or request.user == user:
         comentario.delete()
-        return HttpResponse("<h1>Operação concluída com sucesso</h1>")
+        return redirect('noticia', comentario.noticia.id)
     else:
         return redirect('home')

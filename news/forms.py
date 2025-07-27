@@ -1,3 +1,5 @@
+# news/forms.py
+
 from .models import Noticia, ArquivoNaNoticia, ComentarioNaNoticia
 from django.forms import modelformset_factory
 from django.forms import ModelForm
